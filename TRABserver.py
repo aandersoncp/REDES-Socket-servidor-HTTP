@@ -1,5 +1,7 @@
 from socket import*
 import os
+import os.path
+from pathlib import Path
 
 serverPort = 5000
 host = "localhost"
@@ -12,12 +14,38 @@ print("Servidor pronto para receber!\n")
 
 while 1:
 	novoSocket, addr = serverSocket.accept()
-	dados = novoSocket.recv(1024)
-	dados.decode("utf-8")
-	print(dados)
-	arq = open(dados, 'rb')
+	dados = novoSocket.recv(2048).decode()
+	fim = dados.find("HTTP")
+	i = 4
+	caminho = ""
+	while(i < fim - 1):
+		caminho = caminho + dados[i]
+		i = i + 1
+	arq = open(caminho, 'rb')
+	j = 0
 	for i in arq.readlines():
-		novoSocket.send(i)
+		if( j == 0):
+			msg = 'HTTP/1.1 200 OK\n\n' + i.decode()
+		else:
+			msg = i.decode()
+		j = j + 1
+		novoSocket.send(bytes(msg, 'utf-8'))
+
+	#reply = 'HTTP/1.1 200 OK\n\nHello Word'
+	#novoSocket.sendall(bytes(reply, 'utf-8'))
+
 	print("Arquivo enviado!")
 	arq.close()
 	novoSocket.close()
+
+
+
+	"""if(os.path.exists(dados)){
+		arq = open(dados, 'rb')
+		for i in arq.readlines():
+			novoSocket.send(i)
+		arq.close()
+		print("Arquivo enviado!")
+	} else {
+		novoSocket.send(bytes("404 Not Found", 'utf-8'))
+	}"""
