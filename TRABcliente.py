@@ -20,9 +20,5 @@ while 1:
 	print(resposta)
 	arquivo.write(dados)
 
-"""for i in arquivo.readlines():
-	i.decode("utf-8")
-	print(i)"""
-
 arquivo.close()
 client.close()
