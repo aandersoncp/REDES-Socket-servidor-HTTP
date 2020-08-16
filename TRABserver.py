@@ -31,21 +31,6 @@ while 1:
 		j = j + 1
 		novoSocket.send(bytes(msg, 'utf-8'))
 
-	#reply = 'HTTP/1.1 200 OK\n\nHello Word'
-	#novoSocket.sendall(bytes(reply, 'utf-8'))
-
 	print("Arquivo enviado!")
 	arq.close()
 	novoSocket.close()
-
-
-
-	"""if(os.path.exists(dados)){
-		arq = open(dados, 'rb')
-		for i in arq.readlines():
-			novoSocket.send(i)
-		arq.close()
-		print("Arquivo enviado!")
-	} else {
-		novoSocket.send(bytes("404 Not Found", 'utf-8'))
-	}"""
