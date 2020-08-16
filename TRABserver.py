@@ -11,15 +11,19 @@ serverSocket.bind((host ,serverPort))
 serverSocket.listen(1) #Esperando uma requisição
 print("Servidor pronto para receber!\n")
 
-while 1:
-	novoSocket, addr = serverSocket.accept()
-	dados = novoSocket.recv(2048).decode()
+def caminho_arquivo(dados):
 	fim = dados.find("HTTP")
 	i = 4
 	caminho = ""
 	while(i < fim - 1):
 		caminho = caminho + dados[i]
 		i = i + 1
+	return caminho
+
+while 1:
+	novoSocket, addr = serverSocket.accept()
+	dados = novoSocket.recv(2048).decode()
+	caminho = caminho_arquivo(dados)
 	if(os.path.exists(caminho)):
 		arq = open(caminho, 'rb')
 		j = 0
@@ -37,15 +41,3 @@ while 1:
 	print("Arquivo enviado!")
 	arq.close()
 	novoSocket.close()
-
-
-
-	"""if(os.path.exists(dados)){
-		arq = open(dados, 'rb')
-		for i in arq.readlines():
-			novoSocket.send(i)
-		arq.close()
-		print("Arquivo enviado!")
-	} else {
-		novoSocket.send(bytes("404 Not Found", 'utf-8'))
-	}"""
