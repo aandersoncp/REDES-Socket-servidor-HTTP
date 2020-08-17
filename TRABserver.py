@@ -1,6 +1,8 @@
 from socket import*
-import os
 import os.path
+import datetime
+import time
+import os
 
 serverPort = 5000
 host = "localhost"
@@ -24,20 +26,24 @@ while 1:
 	novoSocket, addr = serverSocket.accept()
 	dados = novoSocket.recv(2048).decode()
 	caminho = caminho_arquivo(dados)
+	
 	if(os.path.exists(caminho)):
 		arq = open(caminho, 'rb')
 		j = 0
+		data = str(datetime.datetime.now())
+		tamanho = str(os.path.getsize(caminho))
 		for i in arq.readlines():
 			if( j == 0):
-				msg = 'HTTP/1.1 200 OK\n\n' + i.decode()
+				msg = 'HTTP/1.1 200 OK\nConnection: close\nDate: ' + str(datetime.datetime.now()) + '\nLast-Modified: ' + time.ctime(os.path.getmtime(caminho)) + '\nContent-length: ' + str(os.path.getsize(caminho)) + '\nContent-type: text\n\n' + i.decode()
 			else:
 				msg = i.decode()
 			j = j + 1
 			novoSocket.send(bytes(msg, 'utf-8'))
+		print("Arquivo enviado!")
+		arq.close()
 	else: 
-		msg = 'HTTP/1.1 200 OK\n\n404 Not Found'
+		msg = 'HTTP/1.1 200 OK\nConnection: close\nDate: \n' + str(datetime.datetime.now()) + '\nServer: (############)' + '\n\n404 Not Found'
 		novoSocket.send(bytes(msg, 'utf-8'))
+		print("Arquivo enviado!")
 
-	print("Arquivo enviado!")
-	arq.close()
 	novoSocket.close()
